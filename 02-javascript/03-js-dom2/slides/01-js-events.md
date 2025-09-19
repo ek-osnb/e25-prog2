@@ -1,6 +1,6 @@
 ---
 title: JS Events & DOM Manipulation
-author: Instructor
+author: Osman B
 marp: true
 paginate: true
 ---

@@ -24,10 +24,6 @@ section.lead h3 {
 
 ---
 
-# Program
-
----
-
 # What is WebClient?
 
 > *WebClient is a **non-blocking**, reactive client for making HTTP requests in Spring applications. It is part of the **Spring WebFlux** module and is designed to work with reactive programming paradigms.*
@@ -52,12 +48,55 @@ section.lead h3 {
 ```java
 @Bean
 public WebClient webClient(WebClient.Builder builder) {
-    return WebClient.create("https://api.example.com");
+    return builder.baseUrl("https://api.example.com").build();
 }
 ```
 - We can provide the webclient as a bean and inject it where needed.
 
 ---
+
+# Configuration with multiple base URLs
+```java
+@Bean
+public WebClient.Builder webClientBuilder() {
+    return WebClient.builder()
+        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+}
+
+@Bean
+public WebClient apiOneWebClient(WebClient.Builder builder) {
+    return builder.clone().baseUrl("https://api.one.com").build();
+}
+
+@Bean
+public WebClient apiTwoWebClient(WebClient.Builder builder) {
+    return builder.clone().baseUrl("https://api.two.com").build();
+}
+```
+- The `clone()` method allows us to create multiple WebClient instances with different base URLs while sharing common configurations.
+
+---
+
+# Using WebClient with multiple base URLs
+```java
+private final WebClient apiOneWebClient;
+    private final WebClient apiTwoWebClient;
+
+    public ApiService(
+        @Qualifier("apiOneWebClient") WebClient apiOneWebClient,
+        @Qualifier("apiTwoWebClient") WebClient apiTwoWebClient
+    ) {
+        this.apiOneWebClient = apiOneWebClient;
+        this.apiTwoWebClient = apiTwoWebClient;
+    }
+//
+}
+```
+- We use `@Qualifier` to specify which WebClient bean to inject when multiple beans of the same type exist.
+
+
+---
+
 
 ## Making a GET Request
 ```java
@@ -78,6 +117,7 @@ public Flux<ResponseType> getResources() {
 ## Making a POST Request
 ```java
 record RequestType(String field1, int field2) { }
+
 public Mono<ResponseType> createResource(RequestType request) {
     return webClient.post()
         .uri("/resources")

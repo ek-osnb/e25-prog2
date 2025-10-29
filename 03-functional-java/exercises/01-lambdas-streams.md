@@ -7,6 +7,8 @@ In this exercise you will practice the use of lambda expressions and the Streams
 - Visit [Coding Bat - Functional1](https://codingbat.com/java/Functional-1) and solve the first 5 problems.
 - Visit [Coding Bat - Functional2](https://codingbat.com/java/Functional-2) and solve the first 5 problems.
 
+**Notice that codebat does not provide `.toList()` method, so instead you need to use `.collect(Collectors.toList())` to convert streams back to lists.**
+
 ## Exercise 2: Orders, OrderLines and Products
 
 **1. Create a new Maven project (not Spring Boot) named `functional-java-exercises`.**
